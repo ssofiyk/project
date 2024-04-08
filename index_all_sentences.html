@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Проверка предложения</title>
+</head>
+<body>
+    <h1>Пожалуйста, введите следующее предложение:</h1>
+    <audio controls>
+        <source src="{{ url_for('play_audio') }}" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+    <form  method="POST">
+        <input type="text" name="sentence">
+        <input type="submit" name="check" value="Проверить">
+    </form>
+</body>
+
+<body>
+     <h1>{{ result }}</h1>
+     <h1>Score:</h1>
+     <h1>{{ correct_answers + ' / ' + questions }}</h1>
+</body>
+
+<body>
+
+<form method="post" >
+<input type="submit" name="reset" value="Сбросить">
+
+</form>
+</body>
+
+</html>
