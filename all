@@ -1,0 +1,74 @@
+from flask import Flask, render_template, request, send_file
+
+app = Flask(__name__)
+
+correct_answers = 0
+questions = 1
+
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    global correct_answers
+    global questions
+
+    correct_answers = 0
+    questions = 1
+    return render_template("main.html")
+
+
+@app.route('/quiz', methods=['GET', 'POST'])
+def quiz():
+    global correct_answers
+    global questions
+
+    sentences = ["hh.wav", "ww.wav", "pp.wav"]
+
+    result = ''
+
+    if request.method == 'POST':
+        if request.form.get('reset'):
+            correct_answers = 0
+            questions = 1
+            result = ''
+
+        if request.form.get('check'):
+            sentence = sentences[questions - 1]
+
+            user_sentence = request.form.get('sentence')
+            if user_sentence == sentence:
+                result = "Вы правильно записали предложение!"
+                correct_answers += 1
+            else:
+                result = "Вы неправильно записали предложение."
+
+            if questions == len(sentences):
+                return render_template('result_all_sentences.html',
+                                       correct_answers=str(correct_answers),
+                                       questions=str(questions))
+            else:
+                questions += 1
+
+    return render_template('index_all_sentences.html',
+                           sentence=sentences[questions - 1],
+                           correct_answers=str(correct_answers),
+                           questions=str(questions - 1),
+                           result=result)
+
+
+@app.route('/play', methods=['GET', 'POST'])
+def play_audio():
+    return send_file('audio/hh.wav', as_attachment=False)
+
+
+# @app.route('/a')
+# def returnAudioFile():
+#     path_to_audio_file = '/Users/ssofiyk/PycharmProject/pythonProject/audio/audio.wav' #audio from project dir
+#     return send_file(
+#        path_to_audio_file,
+#        mimetype="audio/wav",
+#        as_attachment=True,
+#     )
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
